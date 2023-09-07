@@ -1,0 +1,72 @@
+package principal;
+
+import java.awt.Canvas;
+import java.awt.Dimension;
+
+import javax.swing.JFrame;
+
+public class Window extends JFrame implements Runnable{
+
+	//creacion de objetos
+	public static final int WIDTH =800, HEIHT = 600;
+	private Canvas canvas;
+	//hilo de vida
+	private Thread thread;
+	private boolean running = false;
+	
+	public Window()
+	{
+		//primeros pasos para el juego
+		setTitle("Space Ship Game");
+		setSize(WIDTH, HEIGHT);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setResizable(false);
+		setLocationRelativeTo(null);
+		setVisible(true);
+		
+		//para el canvas
+		canvas = new Canvas();
+		canvas.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+		canvas.setMaximumSize(new Dimension(WIDTH, HEIGHT));
+		canvas.setMinimumSize(new Dimension(WIDTH, HEIGHT));
+		canvas.setFocusable(true);
+		
+		
+	}
+	
+	
+	
+	public static void main(String[] args) {
+		new Window().Start();
+		
+		while(running)
+		{
+			
+		}
+	}
+
+	@Override
+	public void run() {
+		
+		Stop();
+	}
+		//creacion de metodos
+		
+		private void Start(){
+			thread  = new Thread(this);
+			thread.start();
+			running = true;
+		}
+		
+		private void Stop(){
+			try {
+				thread.join();
+				running = false;
+			} catch (InterruptedException e) {				
+				e.printStackTrace();
+			}
+			
+		}
+	
+
+}
