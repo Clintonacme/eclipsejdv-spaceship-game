@@ -1,6 +1,7 @@
 package principal;
 
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
@@ -18,7 +19,11 @@ public class Window extends JFrame implements Runnable{
 	
 	private BufferStrategy bs;
 	private Graphics g;
-	
+
+	private final int FPS = 60;
+	private double TARGETTIME = 1000000000/FPS; //objetivo de tiempo
+	private double delta= 0;
+	private int PROMEDIOFPS = FPS; //PROMEDIO == AVERAGE
 	public Window()
 	{
 		//primeros pasos para el juego
@@ -67,7 +72,11 @@ public class Window extends JFrame implements Runnable{
 		//Empezamos a dibujar
 		g.clearRect(0, 0, WIDTH, HEIGHT);
 		
-		g.drawRect(x, 0, 100, 100);
+		g.setColor(Color.black);
+		
+		g.drawString(""+PROMEDIOFPS, 10, 10);
+		
+		// g.drawRect(x, 0, 100, 100);
 		
 		//Terminando de dibujar
 		
@@ -80,10 +89,36 @@ public class Window extends JFrame implements Runnable{
 	@Override
 	public void run() {
 		
+		long now = 0;
+		long lastTime = System.nanoTime();
+		int frames = 0;
+		int time = 0;
+		
+		
+		
 		while(running)
 		{
-			update();
-			draw();
+			now = System.nanoTime();
+			delta += (now - lastTime)/ TARGETTIME;
+			time += (now - lastTime);
+			lastTime = now;
+			
+			if(delta >= 1){
+				update();
+				draw();	
+			 	delta --;
+			 	frames ++;
+			 	//System.out.println(frames);
+			}
+			if (time >= 1000000000)
+			{
+				PROMEDIOFPS = frames;				
+				frames = 0;
+				time = 0;
+				
+			}
+			 
+			
 		}
 		
 		Stop();
